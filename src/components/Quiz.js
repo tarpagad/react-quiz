@@ -50,59 +50,59 @@ const Question = styled.div`
 
 const Quiz = () => {
 
-    const [quiz, setQuiz] = useState([]);
-    const [number, setNumber] = useState(0);
-    const [pts, setPts] = useState(0);
+  const [quiz, setQuiz] = useState([]);
+  const [number, setNumber] = useState(0);
+  const [pts, setPts] = useState(0);
 
-    const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
+  const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
 
-    const pickAnswer = (e) => {
+  const pickAnswer = (e) => {
 
-        let userAnswer = e.target.outerText;
+    let userAnswer = e.target.outerText;
 
-        if (quiz[number].answer === userAnswer) setPts(pts + 1);
-        setNumber(number + 1);
-    }
+    if (quiz[number].answer === userAnswer) setPts(pts + 1);
+    setNumber(number + 1);
+  }
 
-    useEffect(() => {
+  useEffect(() => {
 
-        axios.get('https://opentdb.com/api.php?amount=5&category=18&difficulty=easy&type=multiple')
-            .then(res => {
-                setQuiz(res.data.results.map(item => (
+    axios.get('https://opentdb.com/api.php?amount=5&category=18&difficulty=easy&type=multiple')
+      .then(res => {
+        setQuiz(res.data.results.map(item => (
 
-                    {
-                        question: item.question,
-                        options: shuffle([...item.incorrect_answers, item.correct_answer]),
-                        answer: item.correct_answer
-                    }
+          {
+            question: item.question,
+            options: shuffle([...item.incorrect_answers, item.correct_answer]),
+            answer: item.correct_answer
+          }
 
-                )));
-            })
-            .catch(err => console.error(err))
+        )));
+      })
+      .catch(err => console.error(err))
 
-    }, []);
+  }, []);
 
 
-    return (
-        <QuizWindow>
-            { quiz[number] &&
+  return (
+    <QuizWindow>
+      {quiz[number] &&
 
-                <>
-                    <Question dangerouslySetInnerHTML={{ __html: quiz[number].question }}></Question>
+        <>
+          <Question dangerouslySetInnerHTML={{ __html: quiz[number].question }}></Question>
 
-                    <Options>
-                        {quiz[number].options.map((item, index) => (
-                            <Option key={index} dangerouslySetInnerHTML={{ __html: item }} onClick={pickAnswer}></Option>
-                        ))}
-                    </Options>
-                </>
+          <Options>
+            {quiz[number].options.map((item, index) => (
+              <Option key={index} dangerouslySetInnerHTML={{ __html: item }} onClick={pickAnswer}></Option>
+            ))}
+          </Options>
+        </>
 
-            }
-            {
-                number === 5 && <GameOver pts={pts} />
-            }
-        </QuizWindow>
-    )
+      }
+      {
+        number === 5 && <GameOver pts={pts} />
+      }
+    </QuizWindow>
+  )
 }
 
 export default Quiz
